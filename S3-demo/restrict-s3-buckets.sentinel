@@ -36,7 +36,7 @@ bucket_acl_should_be_private = rule {
 
 
 # Main rule that requires other rules to be true
-
+/*
 # Before the main rule!
 for tag_violators as name, bucket {
   print(bucket.address, "actual tags:", keys(bucket.change.after.tags), "\n\trequired tags:", required_tags,"\n")
@@ -45,6 +45,7 @@ for tag_violators as name, bucket {
 for acl_violators as name, bucket {
   print(bucket.address, "actual acl:", bucket.change.after.acl, "\n\trequired acl:", "private","\n")
 }
+*/
 
 main = rule {
   bucket_should_have_required_tags and
