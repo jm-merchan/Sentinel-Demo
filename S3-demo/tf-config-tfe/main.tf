@@ -13,7 +13,7 @@ provider "tfe" {
 
 
 resource "tfe_project" "sentinel_test_project" {
-  name         = "Jose Merchan TFE"
+  name         = "tfe_provider_workspaces"
   organization = var.organization
 }
 

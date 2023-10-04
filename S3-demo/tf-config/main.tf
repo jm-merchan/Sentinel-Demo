@@ -1,11 +1,4 @@
 terraform {
-  backend "remote" {
-    hostname = "app.terraform.io"
-    organization = "josemerchan-training"
-    workspaces {
-      name = "sentinel"
-    }
-  }
   required_providers {
     aws = {
       version = "~> 3.0"
@@ -29,7 +22,7 @@ resource "aws_s3_bucket" "dev" {
 
   tags = {
     environment = "dev",
-    department = "sales"
+    # department = "sales"  # Uncomment to pass policy
   }
 }
 
@@ -80,7 +73,8 @@ resource "aws_s3_bucket_public_access_block" "dev" {
 
 resource "aws_s3_bucket_acl" "dev" {
   bucket = aws_s3_bucket.dev.id
-  acl    = "private"
+  acl    = "public-read" # Comment and uncomment below
+  # acl    = "private"
 
   depends_on = [
     aws_s3_bucket_public_access_block.dev,

@@ -3,3 +3,4 @@
 .DS_Store
 *.tfvars
 .cache_ggshield
+terraform.tfstate.backup
