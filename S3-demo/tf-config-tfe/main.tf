@@ -20,7 +20,7 @@ resource "tfe_project" "sentinel_test_project" {
 resource "tfe_workspace" "sentinel_test_workspace" {
   name                          = "Sentinel"
   organization                  = var.organization
-  auto_apply                    = false
+  auto_apply                    = true
   allow_destroy_plan            = true
   queue_all_runs                = false
   speculative_enabled           = true
@@ -31,7 +31,7 @@ resource "tfe_workspace" "sentinel_test_workspace" {
   global_remote_state   = false
   project_id            = tfe_project.sentinel_test_project.id
   terraform_version     = "1.4.0"
-  working_directory     = "/S3-demo/tf-config"
+  working_directory     = var.working_dir
   file_triggers_enabled = true
   vcs_repo {
     branch             = ""

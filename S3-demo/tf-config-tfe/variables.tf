@@ -17,3 +17,9 @@ variable "repo" {
   type        = string
   description = "Repo Reference"
 }
+
+variable "working_dir" {
+  type        = string
+  description = "Working Directory"
+  default     = ""
+}
