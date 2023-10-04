@@ -1,0 +1,191 @@
+import "strings"
+import "types"
+
+_modules = {
+	"root": {
+		"data":    {},
+		"modules": {},
+		"outputs": {},
+		"providers": {
+			"aws": {
+				"alias": {
+					"": {
+						"config": {
+							"access_key": "AKIA******",
+							"region":     "us-east-1",
+							"secret_key": "*******",
+						},
+						"references": {
+							"access_key": [],
+							"region":     [],
+							"secret_key": [],
+						},
+						"version": "~> 3.0",
+					},
+				},
+				"config": {
+					"access_key": "AKIA******",
+					"region":     "us-east-1",
+					"secret_key": "***********",
+				},
+				"references": {
+					"access_key": [],
+					"region":     [],
+					"secret_key": [],
+				},
+				"version": "~> 3.0",
+			},
+			"random": {
+				"alias": {
+					"": {
+						"config":     {},
+						"references": {},
+						"version":    "",
+					},
+				},
+				"config":     {},
+				"references": {},
+				"version":    "",
+			},
+		},
+		"resources": {
+			"aws_s3_bucket": {
+				"dev": {
+					"config": {
+						"force_destroy": true,
+						"tags": {
+							"environment": "dev",
+						},
+					},
+					"provisioners": null,
+					"references": {
+						"bucket": [
+							"random_pet.petname.id",
+							"random_pet.petname",
+						],
+						"force_destroy": [],
+						"tags":          [],
+					},
+				},
+			},
+			"aws_s3_bucket_acl": {
+				"dev": {
+					"config": {
+						"acl": "public-read",
+					},
+					"provisioners": null,
+					"references": {
+						"acl": [],
+						"bucket": [
+							"aws_s3_bucket.dev.id",
+							"aws_s3_bucket.dev",
+						],
+					},
+				},
+			},
+			"aws_s3_bucket_ownership_controls": {
+				"dev": {
+					"config": {
+						"rule": [
+							{
+								"object_ownership": "BucketOwnerPreferred",
+							},
+						],
+					},
+					"provisioners": null,
+					"references": {
+						"bucket": [
+							"aws_s3_bucket.dev.id",
+							"aws_s3_bucket.dev",
+						],
+						"rule": [
+							{
+								"object_ownership": [],
+							},
+						],
+					},
+				},
+			},
+			"aws_s3_bucket_policy": {
+				"dev": {
+					"config":       {},
+					"provisioners": null,
+					"references": {
+						"bucket": [
+							"aws_s3_bucket.dev.id",
+							"aws_s3_bucket.dev",
+						],
+						"policy": [
+							"random_pet.petname.id",
+							"random_pet.petname",
+						],
+					},
+				},
+			},
+			"aws_s3_bucket_public_access_block": {
+				"dev": {
+					"config": {
+						"block_public_acls":       false,
+						"block_public_policy":     false,
+						"ignore_public_acls":      false,
+						"restrict_public_buckets": false,
+					},
+					"provisioners": null,
+					"references": {
+						"block_public_acls":   [],
+						"block_public_policy": [],
+						"bucket": [
+							"aws_s3_bucket.dev.id",
+							"aws_s3_bucket.dev",
+						],
+						"ignore_public_acls":      [],
+						"restrict_public_buckets": [],
+					},
+				},
+			},
+			"random_pet": {
+				"petname": {
+					"config": {
+						"length":    4,
+						"separator": "-",
+					},
+					"provisioners": null,
+					"references": {
+						"length":    [],
+						"separator": [],
+					},
+				},
+			},
+		},
+		"variables": {},
+	},
+}
+
+module_paths = [
+	[],
+]
+
+module = func(path) {
+	if types.type_of(path) is not "list" {
+		error("expected list, got", types.type_of(path))
+	}
+
+	if length(path) < 1 {
+		return _modules.root
+	}
+
+	addr = []
+	for path as p {
+		append(addr, "module")
+		append(addr, p)
+	}
+
+	return _modules[strings.join(addr, ".")]
+}
+
+data = _modules.root.data
+modules = _modules.root.modules
+providers = _modules.root.providers
+resources = _modules.root.resources
+variables = _modules.root.variables
+outputs = _modules.root.outputs

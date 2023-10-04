@@ -1,0 +1,214 @@
+import "strings"
+
+providers = {
+	"aws": {
+		"alias": "",
+		"config": {
+			"access_key": {
+				"constant_value": "AK*****",
+			},
+			"region": {
+				"constant_value": "us-east-1",
+			},
+			"secret_key": {
+				"constant_value": "***********",
+			},
+		},
+		"full_name":           "registry.terraform.io/hashicorp/aws",
+		"module_address":      "",
+		"name":                "aws",
+		"provider_config_key": "aws",
+		"version_constraint":  "~> 3.0",
+	},
+	"random": {
+		"alias":               "",
+		"config":              {},
+		"full_name":           "registry.terraform.io/hashicorp/random",
+		"module_address":      "",
+		"name":                "random",
+		"provider_config_key": "random",
+		"version_constraint":  "",
+	},
+}
+
+resources = {
+	"aws_s3_bucket.dev": {
+		"address": "aws_s3_bucket.dev",
+		"config": {
+			"bucket": {
+				"references": [
+					"random_pet.petname.id",
+					"random_pet.petname",
+				],
+			},
+			"force_destroy": {
+				"constant_value": true,
+			},
+			"tags": {
+				"constant_value": {
+					"environment": "dev",
+				},
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "dev",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_s3_bucket",
+	},
+	"aws_s3_bucket_acl.dev": {
+		"address": "aws_s3_bucket_acl.dev",
+		"config": {
+			"acl": {
+				"constant_value": "public-read",
+			},
+			"bucket": {
+				"references": [
+					"aws_s3_bucket.dev.id",
+					"aws_s3_bucket.dev",
+				],
+			},
+		},
+		"count": {},
+		"depends_on": [
+			"aws_s3_bucket_public_access_block.dev",
+			"aws_s3_bucket_ownership_controls.dev",
+		],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "dev",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_s3_bucket_acl",
+	},
+	"aws_s3_bucket_ownership_controls.dev": {
+		"address": "aws_s3_bucket_ownership_controls.dev",
+		"config": {
+			"bucket": {
+				"references": [
+					"aws_s3_bucket.dev.id",
+					"aws_s3_bucket.dev",
+				],
+			},
+			"rule": [
+				{
+					"object_ownership": {
+						"constant_value": "BucketOwnerPreferred",
+					},
+				},
+			],
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "dev",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_s3_bucket_ownership_controls",
+	},
+	"aws_s3_bucket_policy.dev": {
+		"address": "aws_s3_bucket_policy.dev",
+		"config": {
+			"bucket": {
+				"references": [
+					"aws_s3_bucket.dev.id",
+					"aws_s3_bucket.dev",
+				],
+			},
+			"policy": {
+				"references": [
+					"random_pet.petname.id",
+					"random_pet.petname",
+				],
+			},
+		},
+		"count": {},
+		"depends_on": [
+			"aws_s3_bucket_public_access_block.dev",
+			"aws_s3_bucket_ownership_controls.dev",
+		],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "dev",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_s3_bucket_policy",
+	},
+	"aws_s3_bucket_public_access_block.dev": {
+		"address": "aws_s3_bucket_public_access_block.dev",
+		"config": {
+			"block_public_acls": {
+				"constant_value": false,
+			},
+			"block_public_policy": {
+				"constant_value": false,
+			},
+			"bucket": {
+				"references": [
+					"aws_s3_bucket.dev.id",
+					"aws_s3_bucket.dev",
+				],
+			},
+			"ignore_public_acls": {
+				"constant_value": false,
+			},
+			"restrict_public_buckets": {
+				"constant_value": false,
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "dev",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_s3_bucket_public_access_block",
+	},
+	"random_pet.petname": {
+		"address": "random_pet.petname",
+		"config": {
+			"length": {
+				"constant_value": 4,
+			},
+			"separator": {
+				"constant_value": "-",
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "petname",
+		"provider_config_key": "random",
+		"provisioners":        [],
+		"type":                "random_pet",
+	},
+}
+
+provisioners = {}
+
+variables = {}
+
+outputs = {}
+
+module_calls = {}
+
+strip_index = func(addr) {
+	s = strings.split(addr, ".")
+	for s as i, v {
+		s[i] = strings.split(v, "[")[0]
+	}
+
+	return strings.join(s, ".")
+}
