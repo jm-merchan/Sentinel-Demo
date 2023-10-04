@@ -322,13 +322,13 @@ raw = {
 			"aws": {
 				"expressions": {
 					"access_key": {
-						"constant_value": "AKIAXYE2JN6WLFZW7IH3",
+						"constant_value": "AKI************",
 					},
 					"region": {
 						"constant_value": "us-east-1",
 					},
 					"secret_key": {
-						"constant_value": "ghORpFYATVP3+P1Z3dgEQPFbcu7svraDxs38TYYP",
+						"constant_value": "gh************",
 					},
 				},
 				"full_name":          "registry.terraform.io/hashicorp/aws",
