@@ -1,3 +1,5 @@
 .terraform*
 *tfstate
 .DS_Store
+*.tfvars
+.cache_ggshield
