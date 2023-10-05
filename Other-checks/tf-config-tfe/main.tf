@@ -18,7 +18,7 @@ resource "tfe_project" "sentinel_test_project" {
 }
 
 resource "tfe_workspace" "sentinel_test_workspace" {
-  name                          = "Sentinel_Test2"
+  name                          = var.workspace
   organization                  = var.organization
   auto_apply                    = true
   allow_destroy_plan            = true
@@ -26,11 +26,11 @@ resource "tfe_workspace" "sentinel_test_workspace" {
   speculative_enabled           = true
   structured_run_output_enabled = true
 
-  execution_mode        = "remote"
-  assessments_enabled   = true
-  global_remote_state   = false
-  project_id            = tfe_project.sentinel_test_project.id
-  terraform_version     = "1.4.0"
+  execution_mode      = "remote"
+  assessments_enabled = true
+  global_remote_state = false
+  project_id          = tfe_project.sentinel_test_project.id
+  # terraform_version     = "1.4.0"
   working_directory     = var.working_dir
   file_triggers_enabled = true
   vcs_repo {
@@ -41,13 +41,14 @@ resource "tfe_workspace" "sentinel_test_workspace" {
   }
 }
 
+
 resource "tfe_variable" "cidr" {
   key          = "range"
   value        = jsonencode(var.cidrs)
   category     = "terraform"
   workspace_id = tfe_workspace.sentinel_test_workspace.id
   description  = "List of CIDRs allow to access on port 22/SSH"
-  hcl = true
+  hcl          = true
 }
 
 resource "tfe_variable" "public_key" {
@@ -58,6 +59,23 @@ resource "tfe_variable" "public_key" {
   description  = "SSH Public key"
   sensitive    = true
 }
+
+/*
+resource "tfe_workspace_run" "ws_run_sentinel_test_workspace" {
+  workspace_id = tfe_workspace.sentinel_test_workspace.id
+
+  apply {
+    manual_confirm = false
+    retry          = false
+  }
+
+  destroy {
+    manual_confirm = false
+    retry          = false
+    wait_for_run   = true
+  }
+}
+*/
 
 
 # Steps to upload folder with Sentinel configuration

@@ -8,6 +8,11 @@ variable "project" {
   description = "Project Name"
 }
 
+variable "workspace" {
+  type        = string
+  description = "workspace name"
+}
+
 variable "gh_token" {
   type        = string
   description = "OAuth Token ID"

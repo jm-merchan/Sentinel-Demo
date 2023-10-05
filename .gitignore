@@ -5,3 +5,4 @@
 .cache_ggshield
 terraform.tfstate.backup
 .sentinel
+terraform-dynamic-credentials-setup-examples*
