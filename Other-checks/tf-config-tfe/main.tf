@@ -18,7 +18,7 @@ resource "tfe_project" "sentinel_test_project" {
 }
 
 resource "tfe_workspace" "sentinel_test_workspace" {
-  name                          = "Sentinel"
+  name                          = "Sentinel_Test2"
   organization                  = var.organization
   auto_apply                    = true
   allow_destroy_plan            = true
@@ -39,6 +39,14 @@ resource "tfe_workspace" "sentinel_test_workspace" {
     identifier         = var.repo
     oauth_token_id     = var.gh_token
   }
+}
+
+resource "tfe_variable" "test" {
+  key          = "range"
+  value        = "${var.cidrs}"
+  category     = "terraform"
+  workspace_id = tfe_workspace.sentinel_test_workspace.id
+  description  = "List of CIDRs allow to access on port 22/SSH"
 }
 
 

@@ -23,3 +23,9 @@ variable "working_dir" {
   description = "Working Directory"
   default     = ""
 }
+
+variable "cidrs" {
+  type        = string
+  description = "CIDR Ranges"
+  default     = "['0.0.0.0/0']"
+}

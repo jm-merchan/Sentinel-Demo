@@ -6,78 +6,75 @@ terraform {
   }
 }
 
+variable "range" {
+  type        = list(string)
+  description = "CIDR Range"
+  default     = ["0.0.0.0/0"]
+}
+
 provider "aws" {
-  region = "us-east-1"
+  region = "us-east-1" # Change this to your desired AWS region
 }
 
-resource "random_pet" "petname" {
-  length    = 4
-  separator = "-"
+variable "public_key" {
+  type = string
+  description = "Public Key for EC2"
+  sensitive = true
 }
 
+data "aws_ami" "latest_ubuntu" {
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  owners = ["099720109477"] # Canonical's AWS account ID for Ubuntu
+}
 
-resource "aws_s3_bucket" "dev" {
-  bucket        = "sentinel-ws-${random_pet.petname.id}"
-  force_destroy = true
+data "aws_vpc" "default" {
+  default = true
+}
+
+resource "aws_security_group" "ssh" {
+  name   = "ssh"
+  vpc_id = data.aws_vpc.default.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.range
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_key_pair" "ec2_key" {
+  key_name   = "ec2-key"
+  public_key = var.public_key
+}
+
+resource "aws_instance" "example" {
+  ami           = data.aws_ami.latest_ubuntu.id
+  instance_type = "t3.medium" 
+  key_name      = aws_key_pair.ec2_key.key_name
+
+  vpc_security_group_ids = [aws_security_group.ssh.id]
 
   tags = {
-    environment = "dev",
-    # department = "sales"  # Uncomment to pass policy
+    Name = "ExampleInstance"
   }
 }
 
-resource "aws_s3_bucket_policy" "dev" {
-  bucket = aws_s3_bucket.dev.id
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "PublicReadGetObject",
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": [
-                "s3:GetObject"
-            ],
-            "Resource": [
-                "arn:aws:s3:::sentinel-ws-${random_pet.petname.id}/*"
-            ]
-        }
-    ]
-}
-EOF
-
-depends_on = [
-  aws_s3_bucket_public_access_block.dev,
-  aws_s3_bucket_ownership_controls.dev,
-]
-}
-
-resource "aws_s3_bucket_ownership_controls" "dev" {
-  bucket = aws_s3_bucket.dev.id
-  rule {
-    object_ownership = "BucketOwnerPreferred"
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "dev" {
-  bucket = aws_s3_bucket.dev.id
-
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
-
-
-resource "aws_s3_bucket_acl" "dev" {
-  bucket = aws_s3_bucket.dev.id
-  acl    = "public-read" # Comment and uncomment below
-  # acl    = "private"
-
-  depends_on = [
-    aws_s3_bucket_public_access_block.dev,
-    aws_s3_bucket_ownership_controls.dev,
-  ]
+output "public_ip" {
+  value = aws_instance.example.public_ip
 }

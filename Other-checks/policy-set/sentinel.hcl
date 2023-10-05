@@ -1,4 +1,4 @@
-policy "restrict-s3-buckets" {
-  source            = "./restrict-s3-buckets.sentinel"
+policy "restrict-ec2-type-SG" {
+  source            = "./restrict-ec2-type-SG.sentinel"
   enforcement_level = "hard-mandatory"
 }
