@@ -4,3 +4,4 @@
 *.tfvars
 .cache_ggshield
 terraform.tfstate.backup
+.sentinel

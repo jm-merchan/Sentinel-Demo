@@ -25,7 +25,13 @@ variable "working_dir" {
 }
 
 variable "cidrs" {
-  type        = string
+  type        = list(string)
   description = "CIDR Ranges"
-  default     = "['0.0.0.0/0']"
+  default     = ["0.0.0.0/0"]
+}
+
+variable "public_key" {
+  type        = string
+  description = "Public Key for EC2 instance"
+  sensitive   = true
 }

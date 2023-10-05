@@ -1,0 +1,234 @@
+import "strings"
+
+providers = {
+	"aws": {
+		"alias": "",
+		"config": {
+			"region": {
+				"constant_value": "us-east-1",
+			},
+		},
+		"full_name":           "registry.terraform.io/hashicorp/aws",
+		"module_address":      "",
+		"name":                "aws",
+		"provider_config_key": "aws",
+		"version_constraint":  "~> 3.0",
+	},
+}
+
+resources = {
+	"aws_instance.example": {
+		"address": "aws_instance.example",
+		"config": {
+			"ami": {
+				"references": [
+					"data.aws_ami.latest_ubuntu.id",
+					"data.aws_ami.latest_ubuntu",
+				],
+			},
+			"instance_type": {
+				"constant_value": "t3.medium",
+			},
+			"key_name": {
+				"references": [
+					"aws_key_pair.ec2_key.key_name",
+					"aws_key_pair.ec2_key",
+				],
+			},
+			"tags": {
+				"constant_value": {
+					"Name": "ExampleInstance",
+				},
+			},
+			"vpc_security_group_ids": {
+				"references": [
+					"aws_security_group.ssh.id",
+					"aws_security_group.ssh",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "example",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_instance",
+	},
+	"aws_key_pair.ec2_key": {
+		"address": "aws_key_pair.ec2_key",
+		"config": {
+			"key_name": {
+				"constant_value": "ec2-key",
+			},
+			"public_key": {
+				"references": [
+					"var.public_key",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "ec2_key",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_key_pair",
+	},
+	"aws_security_group.ssh": {
+		"address": "aws_security_group.ssh",
+		"config": {
+			"egress": {
+				"constant_value": [
+					{
+						"cidr_blocks": [
+							"0.0.0.0/0",
+						],
+						"description":      null,
+						"from_port":        0,
+						"ipv6_cidr_blocks": null,
+						"prefix_list_ids":  null,
+						"protocol":         "-1",
+						"security_groups":  null,
+						"self":             null,
+						"to_port":          0,
+					},
+				],
+			},
+			"ingress": {
+				"references": [
+					"var.range",
+				],
+			},
+			"name": {
+				"constant_value": "ssh",
+			},
+			"vpc_id": {
+				"references": [
+					"data.aws_vpc.default.id",
+					"data.aws_vpc.default",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "ssh",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_security_group",
+	},
+	"data.aws_ami.latest_ubuntu": {
+		"address": "data.aws_ami.latest_ubuntu",
+		"config": {
+			"filter": [
+				{
+					"name": {
+						"constant_value": "name",
+					},
+					"values": {
+						"constant_value": [
+							"ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+						],
+					},
+				},
+				{
+					"name": {
+						"constant_value": "virtualization-type",
+					},
+					"values": {
+						"constant_value": [
+							"hvm",
+						],
+					},
+				},
+			],
+			"most_recent": {
+				"constant_value": true,
+			},
+			"owners": {
+				"constant_value": [
+					"099720109477",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "data",
+		"module_address":      "",
+		"name":                "latest_ubuntu",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_ami",
+	},
+	"data.aws_vpc.default": {
+		"address": "data.aws_vpc.default",
+		"config": {
+			"default": {
+				"constant_value": true,
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "data",
+		"module_address":      "",
+		"name":                "default",
+		"provider_config_key": "aws",
+		"provisioners":        [],
+		"type":                "aws_vpc",
+	},
+}
+
+provisioners = {}
+
+variables = {
+	"public_key": {
+		"default":        null,
+		"description":    "Public Key for EC2",
+		"module_address": "",
+		"name":           "public_key",
+	},
+	"range": {
+		"default": [
+			"0.0.0.0/0",
+		],
+		"description":    "CIDR Range",
+		"module_address": "",
+		"name":           "range",
+	},
+}
+
+outputs = {
+	"public_ip": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "",
+		"name":           "public_ip",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"aws_instance.example.public_ip",
+				"aws_instance.example",
+			],
+		},
+	},
+}
+
+module_calls = {}
+
+strip_index = func(addr) {
+	s = strings.split(addr, ".")
+	for s as i, v {
+		s[i] = strings.split(v, "[")[0]
+	}
+
+	return strings.join(s, ".")
+}

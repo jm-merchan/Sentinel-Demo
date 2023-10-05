@@ -1,0 +1,63 @@
+id = "run-eLaE3yBCFx5GGyP9"
+created_at = "2023-10-05T14:05:32.034Z"
+created_by = "josemerchan"
+message = "Triggered via UI"
+commit_sha = "5ca2896f5539d4b62925dddf0dfd7d57beb99a1d"
+speculative = true
+is_destroy = false
+refresh = true
+refresh_only = false
+replace_addrs = null
+target_addrs = null
+project = {
+	"id":   "prj-5pjGZeTTeWHJoUBV",
+	"name": "Sentinel Tests",
+}
+
+variables = {
+	"AWS_ACCESS_KEY_ID": {
+		"category":  "env",
+		"sensitive": false,
+	},
+	"AWS_SECRET_ACCESS_KEY": {
+		"category":  "env",
+		"sensitive": true,
+	},
+	"AWS_SESSION_EXPIRATION": {
+		"category":  "env",
+		"sensitive": false,
+	},
+	"AWS_SESSION_TOKEN": {
+		"category":  "env",
+		"sensitive": true,
+	},
+	"public_key": {
+		"category":  "terraform",
+		"sensitive": true,
+	},
+	"range": {
+		"category":  "terraform",
+		"sensitive": false,
+	},
+}
+
+organization = {
+	"name": "josemerchan-training",
+}
+
+workspace = {
+	"auto_apply":     true,
+	"created_at":     "2023-10-05T13:56:12.791Z",
+	"description":    "",
+	"execution_mode": "remote",
+	"id":             "ws-qunEPLGJiDQe28gF",
+	"name":           "Sentinel_Test2",
+	"tags":           [],
+	"vcs_repo": {
+		"branch":             "",
+		"display_identifier": "jm-merchan/Sentinel-Demo",
+		"identifier":         "jm-merchan/Sentinel-Demo",
+		"ingress_submodules": false,
+	},
+	"working_directory": "/Other-checks/tf-config",
+}

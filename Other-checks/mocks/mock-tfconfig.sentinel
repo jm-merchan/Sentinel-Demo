@@ -1,0 +1,212 @@
+import "strings"
+import "types"
+
+_modules = {
+	"root": {
+		"data": {
+			"aws_ami": {
+				"latest_ubuntu": {
+					"config": {
+						"filter": [
+							{
+								"name": "name",
+								"values": [
+									"ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+								],
+							},
+							{
+								"name": "virtualization-type",
+								"values": [
+									"hvm",
+								],
+							},
+						],
+						"most_recent": true,
+						"owners": [
+							"099720109477",
+						],
+					},
+					"provisioners": null,
+					"references": {
+						"filter": [
+							{
+								"name":   [],
+								"values": [],
+							},
+							{
+								"name":   [],
+								"values": [],
+							},
+						],
+						"most_recent": [],
+						"owners":      [],
+					},
+				},
+			},
+			"aws_vpc": {
+				"default": {
+					"config": {
+						"default": true,
+					},
+					"provisioners": null,
+					"references": {
+						"default": [],
+					},
+				},
+			},
+		},
+		"modules": {},
+		"outputs": {
+			"public_ip": {
+				"depends_on":  [],
+				"description": "",
+				"references": [
+					"aws_instance.example.public_ip",
+					"aws_instance.example",
+				],
+				"sensitive": false,
+				"value":     undefined,
+			},
+		},
+		"providers": {
+			"aws": {
+				"alias": {
+					"": {
+						"config": {
+							"region": "us-east-1",
+						},
+						"references": {
+							"region": [],
+						},
+						"version": "~> 3.0",
+					},
+				},
+				"config": {
+					"region": "us-east-1",
+				},
+				"references": {
+					"region": [],
+				},
+				"version": "~> 3.0",
+			},
+		},
+		"resources": {
+			"aws_instance": {
+				"example": {
+					"config": {
+						"instance_type": "t3.medium",
+						"tags": {
+							"Name": "ExampleInstance",
+						},
+					},
+					"provisioners": null,
+					"references": {
+						"ami": [
+							"data.aws_ami.latest_ubuntu.id",
+							"data.aws_ami.latest_ubuntu",
+						],
+						"instance_type": [],
+						"key_name": [
+							"aws_key_pair.ec2_key.key_name",
+							"aws_key_pair.ec2_key",
+						],
+						"tags": [],
+						"vpc_security_group_ids": [
+							"aws_security_group.ssh.id",
+							"aws_security_group.ssh",
+						],
+					},
+				},
+			},
+			"aws_key_pair": {
+				"ec2_key": {
+					"config": {
+						"key_name": "ec2-key",
+					},
+					"provisioners": null,
+					"references": {
+						"key_name": [],
+						"public_key": [
+							"var.public_key",
+						],
+					},
+				},
+			},
+			"aws_security_group": {
+				"ssh": {
+					"config": {
+						"egress": [
+							{
+								"cidr_blocks": [
+									"0.0.0.0/0",
+								],
+								"description":      null,
+								"from_port":        0,
+								"ipv6_cidr_blocks": null,
+								"prefix_list_ids":  null,
+								"protocol":         "-1",
+								"security_groups":  null,
+								"self":             null,
+								"to_port":          0,
+							},
+						],
+						"name": "ssh",
+					},
+					"provisioners": null,
+					"references": {
+						"egress": [],
+						"ingress": [
+							"var.range",
+						],
+						"name": [],
+						"vpc_id": [
+							"data.aws_vpc.default.id",
+							"data.aws_vpc.default",
+						],
+					},
+				},
+			},
+		},
+		"variables": {
+			"public_key": {
+				"default":     null,
+				"description": "Public Key for EC2",
+			},
+			"range": {
+				"default": [
+					"0.0.0.0/0",
+				],
+				"description": "CIDR Range",
+			},
+		},
+	},
+}
+
+module_paths = [
+	[],
+]
+
+module = func(path) {
+	if types.type_of(path) is not "list" {
+		error("expected list, got", types.type_of(path))
+	}
+
+	if length(path) < 1 {
+		return _modules.root
+	}
+
+	addr = []
+	for path as p {
+		append(addr, "module")
+		append(addr, p)
+	}
+
+	return _modules[strings.join(addr, ".")]
+}
+
+data = _modules.root.data
+modules = _modules.root.modules
+providers = _modules.root.providers
+resources = _modules.root.resources
+variables = _modules.root.variables
+outputs = _modules.root.outputs

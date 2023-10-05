@@ -1,0 +1,38 @@
+import "tfplan/v2" as tfplan
+
+# Filter EC2 instances that must be created
+ec2_instances = filter tfplan.resource_changes as address, rc {
+  rc.type is "aws_instance" and
+  (rc.change.actions contains "create" or rc.change.actions is ["update"])
+}
+
+# Rule to make sure the instance is of an specific type
+required_tags = ["t3.micro", "t2.micro"]
+
+tag_violators = filter ec2_instances as address, instance {
+  any required_tags as rtag {
+    rtag not in instance.change.after.instance_type
+  }
+}
+
+print("Ensure no EC2 instance is of type differnet than t3.micro and t2.micro")
+
+allowed_instance_type = rule {
+  tag_violators is empty
+}
+
+// --------------------------------------------------------
+// Name:        restrict-ec2-type.sentinel
+// Provider:    hashicorp/aws
+// Resource:    aws_instance
+// Check:       just t3.micro and t2.micro are allowed
+// --------------------------------------------------------
+// Ensure no ec2 instances are deployed with types
+// different from t3.micro or t2.micro
+// --------------------------------------------------------
+main = rule {
+  allowed_instance_type
+}
+
+
+
