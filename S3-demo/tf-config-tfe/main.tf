@@ -18,7 +18,7 @@ resource "tfe_project" "sentinel_test_project" {
 }
 
 resource "tfe_workspace" "sentinel_test_workspace" {
-  name                          = "Sentinel"
+  name                          = var.workspace
   organization                  = var.organization
   auto_apply                    = true
   allow_destroy_plan            = true

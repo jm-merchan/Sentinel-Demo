@@ -23,3 +23,9 @@ variable "working_dir" {
   description = "Working Directory"
   default     = ""
 }
+
+variable "workspace" {
+  type        = string
+  description = "Workspace Name"
+  default     = ""
+}
