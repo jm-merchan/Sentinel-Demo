@@ -54,7 +54,7 @@ resource "aws_security_group" "ssh" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["88.13.16.120/32"]
   }
 }
 
@@ -65,7 +65,7 @@ resource "aws_key_pair" "ec2_key" {
 
 resource "aws_instance" "example" {
   ami           = data.aws_ami.latest_ubuntu.id
-  instance_type = "t3.medium" 
+  instance_type = "t3.micro" 
   key_name      = aws_key_pair.ec2_key.key_name
 
   vpc_security_group_ids = [aws_security_group.ssh.id]
