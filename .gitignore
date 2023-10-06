@@ -6,3 +6,4 @@
 terraform.tfstate.backup
 .sentinel
 terraform-dynamic-credentials-setup-examples*
+hc-sec-demos*

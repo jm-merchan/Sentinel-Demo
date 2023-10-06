@@ -43,7 +43,7 @@ resource "tfe_workspace" "sentinel_test_workspace" {
 
 
 # Steps to upload folder with Sentinel configuration
-/*
+
 data "tfe_slug" "test" {
   // point to the local directory where the policies are located.
   source_path = "../policy-set"
@@ -59,4 +59,4 @@ resource "tfe_policy_set" "test" {
   // reference the tfe_slug data source.
   slug = data.tfe_slug.test
 }
-*/
+
