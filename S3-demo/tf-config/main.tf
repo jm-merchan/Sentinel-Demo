@@ -22,7 +22,7 @@ resource "aws_s3_bucket" "dev" {
 
   tags = {
     environment = "dev",
-    # department = "sales"  # Uncomment to pass policy
+    department = "sales"  # Uncomment to pass policy
   }
 }
 
@@ -73,8 +73,8 @@ resource "aws_s3_bucket_public_access_block" "dev" {
 
 resource "aws_s3_bucket_acl" "dev" {
   bucket = aws_s3_bucket.dev.id
-  acl    = "public-read" # Comment and uncomment below
-  # acl    = "private"
+  #acl    = "public-read" # Comment and uncomment below
+  acl    = "private"
 
   depends_on = [
     aws_s3_bucket_public_access_block.dev,
