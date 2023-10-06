@@ -7,18 +7,18 @@ ec2_instances = filter tfplan.resource_changes as address, rc {
 }
 
 # Rule to make sure the instance is of an specific type
-required_tags = ["t3.micro", "t2.micro"]
+allowed_types = ["t3.micro", "t2.micro"]
 
-tag_violators = filter ec2_instances as address, instance {
-  any required_tags as rtag {
-    rtag not in instance.change.after.instance_type
-  }
+instance_type_allowed = rule {
+    all ec2_instances as _, instance {
+        instance.change.after.instance_type in allowed_types
+    }
 }
 
 print("Ensure no EC2 instance is of type differnet than t3.micro and t2.micro")
 
 allowed_instance_type = rule {
-  tag_violators is empty
+  instance_type_allowed
 }
 
 // --------------------------------------------------------
