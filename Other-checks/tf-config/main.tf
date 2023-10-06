@@ -65,7 +65,7 @@ resource "aws_key_pair" "ec2_key" {
 
 resource "aws_instance" "example" {
   ami           = data.aws_ami.latest_ubuntu.id
-  instance_type = "t3.micro" 
+  instance_type = "t3.medium" 
   key_name      = aws_key_pair.ec2_key.key_name
 
   vpc_security_group_ids = [aws_security_group.ssh.id]
